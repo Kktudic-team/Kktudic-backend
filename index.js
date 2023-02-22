@@ -5,10 +5,7 @@ const port = 3000;
 
 app.use(
   cors({
-    origin: "https://web-kktudic-frontend-r8xoo2mlefs9qly.sel3.cloudtype.app",
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    preflightContinue: false,
-    optionsSuccessStatus: 204
+    origin: "http://localhost:8080",
   })
 );
 
