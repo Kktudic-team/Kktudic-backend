@@ -9,6 +9,8 @@ app.use(
   })
 );
 
+app.options('*', cors())
+
 app.listen(port, () => {
   console.log(`Running on http://localhost:${port}`);
 });
