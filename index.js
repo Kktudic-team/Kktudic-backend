@@ -5,7 +5,7 @@ const port = 3000;
 
 app.use(
   cors({
-    origin: "https://web-kktudic-frontend-r8xoo2mlefs9qly.sel3.cloudtype.app/",
+    origin: "https://web-kktudic-frontend-r8xoo2mlefs9qly.sel3.cloudtype.app",
   })
 );
 
