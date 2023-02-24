@@ -4,7 +4,7 @@ const cors = require('cors')
 const port = 3000
 
 app.use(cors({
-  origin: 'http://localhost:8080'
+  origin: 'https://kktudic-frontend.vercel.app'
 }))
 
 app.listen(port, () => {
