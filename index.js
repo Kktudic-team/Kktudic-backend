@@ -76,7 +76,7 @@ app.post('/api/submit', (req, res) => {
 });
 
 app.get('/api/notices', (req, res) => {
-  fs.readFile('notice.json', 'utf8', (err, data) => {
+  fs.readFile('notice.json', 'utf-8', (err, data) => {
     if (err) {
       res.status(500).send(err);
       return;
@@ -97,7 +97,7 @@ app.get('/api/notices', (req, res) => {
 
 app.get('/api/notices/:id', (req, res) => {
   const id = Number(req.params.id);
-  fs.readFile('notice.json', 'utf8', (err, data) => {
+  fs.readFile('notice.json', 'utf-8', (err, data) => {
     if (err) {
       res.status(500).send(err);
       return;
