@@ -1,17 +1,17 @@
 const express = require('express')
 const app = express()
 const cors = require('cors')
+const fs = require('fs');
 const port = 3000
 
 app.use(cors({
-  origin: ['https://kktudic-frontend.vercel.app', 'https://kkutuword.com/']
+  origin: ['https://kktudic-frontend.vercel.app', 'https://kkutuword.com', 'http://localhost:8080']
 }))
 
 app.listen(port, () => {
   console.log(`Running on http://localhost:${port}`)
 })
 
-const fs = require('fs');
 // 중복 단어를 제거하는 함수
 const removeDuplicates = arr => {
   return [...new Set(arr.map(word => word.trim()))];
@@ -76,72 +76,51 @@ app.post('/api/submit', (req, res) => {
 });
 
 app.get('/api/notices', (req, res) => {
-  fs.readFile('notice.txt', 'utf8', (err, data) => {
+  fs.readFile('notice.json', 'utf8', (err, data) => {
     if (err) {
       res.status(500).send(err);
       return;
     }
 
-    const notices = data.split('\r\n\r\n');
-    const titles = [];
-    const details = [];
-    const dates = [];
+    const notices = JSON.parse(data);
 
-    notices.forEach((notice) => {
-      const [title, ...contentDate] = notice.split('\n');
-      const [content, date] = contentDate;
-      titles.push(title);
-      details.push(content);
-      dates.push(date.trim());
-    });
-
-    const result = titles.map((title, i) => ({
-      id: i + 1,
+    const result = notices.map(({ id, title, content, createdAt }) => ({
+      id,
       title,
-      detail: details[i],
-      createdAt: dates[i],
+      detail: content,
+      createdAt,
     }));
+
     res.json(result);
   });
 });
 
 app.get('/api/notices/:id', (req, res) => {
   const id = Number(req.params.id);
-  fs.readFile('notice.txt', 'utf8', (err, data) => {
+  fs.readFile('notice.json', 'utf8', (err, data) => {
     if (err) {
       res.status(500).send(err);
       return;
     }
 
-    const notices = data.split('\r\n\r\n');
-    if (id < 1 || id > notices.length) {
+    const notices = JSON.parse(data);
+
+    const notice = notices.find((notice) => notice.id === id);
+
+    if (!notice) {
       res.status(404).send(`Notice with ID ${id} not found`);
       return;
     }
 
-    const titles = [];
-    const details = [];
-    const dates = [];
+    const { title, content, createdAt } = notice;
 
-    notices.forEach((notice) => {
-      const [title, ...contentDate] = notice.split('\n');
-      let [content, date] = contentDate;
-      if (!date) {
-        date = '';
-      }
-      titles.push(title);
-      details.push(content.replace(/\n/g, '<br>')); // 개행 문자를 <br> 태그로 대체
-      dates.push(date.trim());
-    });
-
-    const notice = notices[id - 1];
-    const [title, content, createdAt] = notice.split('\n');
     const result = {
       id,
       title,
       content,
-      createdAt: createdAt.trim()
+      createdAt,
     };
+
     res.json(result);
   });
 });
